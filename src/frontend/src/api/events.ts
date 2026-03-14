@@ -105,7 +105,8 @@ export async function getEventDetail(
     if (res.status === 404) return null
     if (!res.ok) return null
     return (await res.json()) as EventDetail
-  } catch {
+  } catch (err) {
+    console.error('getEventDetail failed', { eventId, err })
     return null
   }
 }
@@ -135,7 +136,8 @@ export async function postJoinRequest(
       }
     }
     return { success: false }
-  } catch {
+  } catch (err) {
+    console.error('postJoinRequest failed', { eventId, err })
     return { success: false }
   }
 }
@@ -155,7 +157,8 @@ export async function leaveEvent(
       { method: 'DELETE' }
     )
     return res.status === 204 || res.status === 200
-  } catch {
+  } catch (err) {
+    console.error('leaveEvent failed', { eventId, err })
     return false
   }
 }
