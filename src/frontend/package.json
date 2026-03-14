@@ -11,17 +11,18 @@
     "format": "prettier --write \"src/**/*.{ts,tsx,css}\""
   },
   "dependencies": {
+    "@microsoft/signalr": "^10.0.0",
+    "@react-keycloak/web": "^3.0.0",
     "keycloak-js": "^26.0.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "react-router-dom": "^7.0.0",
-    "@react-keycloak/web": "^3.0.0"
+    "react-router-dom": "^7.0.0"
   },
   "devDependencies": {
-    "@vitejs/plugin-react": "^4.3.0",
     "@eslint/js": "^9.0.0",
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",
+    "@vitejs/plugin-react": "^4.3.0",
     "eslint": "^9.0.0",
     "eslint-plugin-react-hooks": "^5.0.0",
     "eslint-plugin-react-refresh": "^0.4.0",

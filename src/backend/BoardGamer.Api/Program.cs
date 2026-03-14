@@ -1,5 +1,6 @@
 using System.Text.Json;
 using Asp.Versioning;
+using BoardGamer.Api.Hubs;
 using BoardGamer.Application.Common;
 using Microsoft.OpenApi;
 using BoardGamer.Infrastructure.Identity;
@@ -33,6 +34,18 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         };
         options.Events = new JwtBearerEvents
         {
+            OnMessageReceived = context =>
+            {
+                // SignalR WebSocket cannot send Authorization header; accept token from query string.
+                var path = context.HttpContext.Request.Path;
+                if (path.StartsWithSegments("/hubs", StringComparison.OrdinalIgnoreCase))
+                {
+                    var accessToken = context.Request.Query["access_token"].FirstOrDefault();
+                    if (!string.IsNullOrEmpty(accessToken))
+                        context.Token = accessToken;
+                }
+                return Task.CompletedTask;
+            },
             OnTokenValidated = context =>
             {
                 // Map Keycloak realm_access.roles to Role claims for [Authorize(Roles = "Admin")] etc.
@@ -86,6 +99,7 @@ builder.Services.AddApiVersioning(options =>
 });
 
 builder.Services.AddControllers();
+builder.Services.AddSignalR();
 builder.Services.AddOpenApi();
 
 // Swagger UI only when not Production
@@ -125,5 +139,6 @@ app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
+app.MapHub<EventChatHub>("/hubs/eventchat");
 
 app.Run();

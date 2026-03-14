@@ -9,7 +9,19 @@ import {
   postJoinRequest,
   leaveEvent,
 } from '../api/events'
+import { useEventChat } from '../hooks/useEventChat'
 import './EventDetailPage.css'
+
+function formatChatTime(isoString: string): string {
+  try {
+    return new Date(isoString).toLocaleString(undefined, {
+      dateStyle: 'short',
+      timeStyle: 'short',
+    })
+  } catch {
+    return isoString
+  }
+}
 
 export default function EventDetailPage() {
   const { id } = useParams<{ id: string }>()
@@ -22,6 +34,25 @@ export default function EventDetailPage() {
   const [leaveRequesting, setLeaveRequesting] = useState(false)
   const [localPendingJoin, setLocalPendingJoin] = useState(false)
   const [actionError, setActionError] = useState<string | null>(null)
+  const [chatInput, setChatInput] = useState('')
+
+  const getAccessToken = useCallback(async () => {
+    if (keycloak.token) {
+      try {
+        await keycloak.updateToken(30)
+        return keycloak.token ?? undefined
+      } catch {
+        return undefined
+      }
+    }
+    return undefined
+  }, [keycloak])
+
+  const { messages, sendMessage, connectionState, error: chatError } = useEventChat({
+    eventId: id ?? undefined,
+    isParticipant: event?.isCurrentUserParticipant === true,
+    getAccessToken,
+  })
 
   const loadEvent = useCallback(async () => {
     if (!id) {
@@ -176,6 +207,64 @@ export default function EventDetailPage() {
           <p className="event-detail-error" role="alert">
             {actionError}
           </p>
+        )}
+
+        {isParticipant && (
+          <section className="event-detail-section event-detail-chat" aria-label="Event chat">
+            <h2 className="event-detail-heading">Chat</h2>
+            {chatError && (
+              <p className="event-detail-chat-error" role="alert">
+                {chatError}
+              </p>
+            )}
+            {connectionState === 'Connected' && (
+              <>
+                <ul className="event-detail-chat-messages" aria-live="polite">
+                  {messages.length === 0 && (
+                    <li className="event-detail-chat-empty">No messages yet. Say hello!</li>
+                  )}
+                  {messages.map((msg, index) => (
+                    <li key={`${msg.createdAt}-${index}`} className="event-detail-chat-message">
+                      <span className="event-detail-chat-sender">{msg.senderName}</span>
+                      <span className="event-detail-chat-time">
+                        {formatChatTime(msg.createdAt)}
+                      </span>
+                      <p className="event-detail-chat-content">{msg.content}</p>
+                    </li>
+                  ))}
+                </ul>
+                <form
+                  className="event-detail-chat-form"
+                  onSubmit={(e) => {
+                    e.preventDefault()
+                    if (chatInput.trim()) {
+                      sendMessage(chatInput)
+                      setChatInput('')
+                    }
+                  }}
+                >
+                  <input
+                    type="text"
+                    className="event-detail-chat-input"
+                    placeholder="Type a message…"
+                    value={chatInput}
+                    onChange={(e) => setChatInput(e.target.value)}
+                    aria-label="Chat message"
+                    maxLength={2000}
+                  />
+                  <button type="submit" className="event-detail-btn event-detail-btn-primary">
+                    Send
+                  </button>
+                </form>
+              </>
+            )}
+            {connectionState === 'Disconnected' && (
+              <p className="event-detail-chat-status">Connecting to chat…</p>
+            )}
+            {connectionState === 'Reconnecting' && (
+              <p className="event-detail-chat-status">Reconnecting…</p>
+            )}
+          </section>
         )}
 
         <section className="event-detail-actions">
