@@ -63,7 +63,7 @@ BoardGamer is a GDPR-compliant Single Page Application (SPA) for discovering and
 
 ### 3.2 Infrastructure Diagram (AWS)
 
-See [Section 10](#10-infrastructure-diagram) for the full Mermaid diagram. Mermaid source and additional diagrams (network, CI/CD, auth flow): [infrastructure-diagram.md](infrastructure-diagram.md).
+See [Section 10](#10-infrastructure-diagram) for the full Mermaid diagram. Mermaid source and additional diagrams (network, CI/CD, auth flow): [diagrams/infrastructure-diagram.md](diagrams/infrastructure-diagram.md).
 
 ---
 

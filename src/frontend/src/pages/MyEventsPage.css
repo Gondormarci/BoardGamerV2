@@ -1,0 +1,166 @@
+.my-events-page {
+  max-width: 48rem;
+  margin: 0 auto;
+  padding: 1.5rem 1rem;
+}
+
+.my-events-page h1 {
+  margin: 0 0 0.5rem;
+  font-size: 1.5rem;
+}
+
+.my-events-intro {
+  margin: 0 0 1.5rem;
+  color: #555;
+  font-size: 0.95rem;
+}
+
+.my-events-section {
+  margin-bottom: 2rem;
+}
+
+.my-events-section h2 {
+  margin: 0 0 0.75rem;
+  font-size: 1.15rem;
+  font-weight: 600;
+}
+
+.my-events-loading,
+.my-events-empty {
+  margin: 0;
+  padding: 1rem;
+  color: #666;
+  font-size: 0.95rem;
+}
+
+.my-events-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.my-events-card {
+  padding: 1rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  background: #fff;
+}
+
+.my-events-card-title {
+  margin: 0 0 0.35rem;
+  font-size: 1.1rem;
+}
+
+.my-events-card-title a:hover {
+  text-decoration: underline;
+}
+
+.my-events-card-meta {
+  margin: 0;
+  font-size: 0.9rem;
+  color: #555;
+}
+
+.my-events-card-games {
+  font-weight: 500;
+}
+
+.my-events-card-date {
+  margin-left: 0.5rem;
+}
+
+.my-events-card-location {
+  margin: 0.25rem 0 0;
+  font-size: 0.85rem;
+  color: #666;
+}
+
+.my-events-pending-block {
+  margin-top: 0.75rem;
+  padding: 0.75rem 1rem;
+  background: #f8fafc;
+  border-radius: 6px;
+  border: 1px solid #e2e8f0;
+}
+
+.my-events-pending-heading {
+  margin: 0 0 0.5rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.my-events-request-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 1rem;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.my-events-request-row:last-child {
+  border-bottom: none;
+}
+
+.my-events-request-info {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.35rem 0.75rem;
+  flex: 1;
+  min-width: 0;
+}
+
+.my-events-request-username {
+  font-weight: 500;
+}
+
+.my-events-request-rating {
+  font-size: 0.9rem;
+  color: #555;
+}
+
+.my-events-request-date {
+  font-size: 0.85rem;
+  color: #666;
+}
+
+.my-events-request-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.my-events-btn {
+  padding: 0.35rem 0.75rem;
+  font-size: 0.9rem;
+  font-weight: 500;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.my-events-btn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.my-events-btn-approve {
+  background: #16a34a;
+  color: #fff;
+}
+
+.my-events-btn-approve:hover:not(:disabled) {
+  background: #15803d;
+}
+
+.my-events-btn-reject {
+  background: #dc2626;
+  color: #fff;
+}
+
+.my-events-btn-reject:hover:not(:disabled) {
+  background: #b91c1c;
+}
