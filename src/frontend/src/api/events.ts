@@ -213,3 +213,135 @@ export async function createEvent(
     return null
   }
 }
+
+/**
+ * Fetch events list from GET /api/v1/events with optional query string.
+ * Returns array of EventSummary; handles both array and { items: [] } response.
+ */
+async function fetchEventsList(
+  baseUrl: string,
+  fetchWithAuth: AuthFetch,
+  queryString: string
+): Promise<EventSummary[]> {
+  if (!baseUrl) return []
+  try {
+    const url = `${baseUrl}/api/v1/events${queryString ? `?${queryString}` : ''}`
+    const res = await fetchWithAuth(url)
+    if (!res.ok) return []
+    const data = (await res.json()) as unknown
+    const items = Array.isArray(data)
+      ? data
+      : data && typeof data === 'object' && 'items' in data
+        ? (data as { items: EventSummary[] }).items
+        : []
+    return Array.isArray(items) ? items : []
+  } catch (err) {
+    console.error('fetchEventsList failed', { queryString, err })
+    return []
+  }
+}
+
+/**
+ * My hosted events: GET /api/v1/events?hostedBy=me (or equivalent).
+ */
+export async function getMyHostedEvents(
+  baseUrl: string,
+  fetchWithAuth: AuthFetch
+): Promise<EventSummary[]> {
+  return fetchEventsList(baseUrl, fetchWithAuth, 'hostedBy=me')
+}
+
+/**
+ * My joined events: GET /api/v1/events?joinedBy=me (or equivalent).
+ */
+export async function getMyJoinedEvents(
+  baseUrl: string,
+  fetchWithAuth: AuthFetch
+): Promise<EventSummary[]> {
+  return fetchEventsList(baseUrl, fetchWithAuth, 'joinedBy=me')
+}
+
+/**
+ * Join request summary from GET /api/v1/events/{id}/join-requests. Aligned with BE-6.2.
+ */
+export interface JoinRequestSummary {
+  id: string
+  eventId?: string
+  userId: string
+  username?: string
+  playerRating?: number
+  reviewCount?: number
+  requestedAt: string
+  status: string
+}
+
+/**
+ * List pending join requests for an event (host or admin). GET /api/v1/events/{id}/join-requests.
+ */
+export async function getEventJoinRequests(
+  baseUrl: string,
+  fetchWithAuth: AuthFetch,
+  eventId: string
+): Promise<JoinRequestSummary[]> {
+  if (!baseUrl) return []
+  try {
+    const res = await fetchWithAuth(
+      `${baseUrl}/api/v1/events/${encodeURIComponent(eventId)}/join-requests`
+    )
+    if (!res.ok) return []
+    const data = (await res.json()) as unknown
+    const items = Array.isArray(data)
+      ? data
+      : data && typeof data === 'object' && 'items' in data
+        ? (data as { items: JoinRequestSummary[] }).items
+        : []
+    return Array.isArray(items) ? items : []
+  } catch (err) {
+    console.error('getEventJoinRequests failed', { eventId, err })
+    return []
+  }
+}
+
+/**
+ * Approve a join request. POST /api/v1/events/{eventId}/join-requests/{requestId}/approve.
+ */
+export async function approveJoinRequest(
+  baseUrl: string,
+  fetchWithAuth: AuthFetch,
+  eventId: string,
+  requestId: string
+): Promise<boolean> {
+  if (!baseUrl) return false
+  try {
+    const res = await fetchWithAuth(
+      `${baseUrl}/api/v1/events/${encodeURIComponent(eventId)}/join-requests/${encodeURIComponent(requestId)}/approve`,
+      { method: 'POST' }
+    )
+    return res.status === 200 || res.status === 204
+  } catch (err) {
+    console.error('approveJoinRequest failed', { eventId, requestId, err })
+    return false
+  }
+}
+
+/**
+ * Reject a join request. POST /api/v1/events/{eventId}/join-requests/{requestId}/reject.
+ */
+export async function rejectJoinRequest(
+  baseUrl: string,
+  fetchWithAuth: AuthFetch,
+  eventId: string,
+  requestId: string
+): Promise<boolean> {
+  if (!baseUrl) return false
+  try {
+    const res = await fetchWithAuth(
+      `${baseUrl}/api/v1/events/${encodeURIComponent(eventId)}/join-requests/${encodeURIComponent(requestId)}/reject`,
+      { method: 'POST' }
+    )
+    return res.status === 200 || res.status === 204
+  } catch (err) {
+    console.error('rejectJoinRequest failed', { eventId, requestId, err })
+    return false
+  }
+}
