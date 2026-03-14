@@ -22,6 +22,7 @@
     <ProjectReference Include="..\BoardGamer.Application\BoardGamer.Application.csproj" />
     <ProjectReference Include="..\BoardGamer.Infrastructure\BoardGamer.Infrastructure.csproj" />
     <ProjectReference Include="..\BoardGamer.Contracts\BoardGamer.Contracts.csproj" />
+    <ProjectReference Include="..\BoardGamer.Domain\BoardGamer.Domain.csproj" />
   </ItemGroup>
 
 </Project>
