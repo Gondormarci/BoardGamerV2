@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Asp.Versioning.Mvc" Version="10.0.0-preview.1" />
+    <PackageReference Include="Asp.Versioning.Mvc.ApiExplorer" Version="10.0.0-preview.1" />
+    <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\BoardGamer.Application\BoardGamer.Application.csproj" />
+    <ProjectReference Include="..\BoardGamer.Infrastructure\BoardGamer.Infrastructure.csproj" />
+    <ProjectReference Include="..\BoardGamer.Contracts\BoardGamer.Contracts.csproj" />
+  </ItemGroup>
+
+</Project>

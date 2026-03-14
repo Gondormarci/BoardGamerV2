@@ -1,0 +1,7 @@
+<Solution>
+  <Project Path="BoardGamer.Api/BoardGamer.Api.csproj" />
+  <Project Path="BoardGamer.Application/BoardGamer.Application.csproj" />
+  <Project Path="BoardGamer.Contracts/BoardGamer.Contracts.csproj" />
+  <Project Path="BoardGamer.Domain/BoardGamer.Domain.csproj" />
+  <Project Path="BoardGamer.Infrastructure/BoardGamer.Infrastructure.csproj" />
+</Solution>
