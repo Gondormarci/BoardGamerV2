@@ -1,5 +1,6 @@
 import { Routes, Route } from 'react-router-dom'
 import Layout from './components/Layout'
+import ProtectedRoute from './components/ProtectedRoute'
 import HomePage from './pages/HomePage'
 import SearchPage from './pages/SearchPage'
 import EventDetailPage from './pages/EventDetailPage'
@@ -20,9 +21,11 @@ export default function App() {
         <Route index element={<HomePage />} />
         <Route path="search" element={<SearchPage />} />
         <Route path="events/:id" element={<EventDetailPage />} />
-        <Route path="events/create" element={<CreateEventPage />} />
-        <Route path="my-events" element={<MyEventsPage />} />
-        <Route path="profile" element={<ProfilePage />} />
+        <Route element={<ProtectedRoute />}>
+          <Route path="events/create" element={<CreateEventPage />} />
+          <Route path="my-events" element={<MyEventsPage />} />
+          <Route path="profile" element={<ProfilePage />} />
+        </Route>
         <Route path="login" element={<LoginPage />} />
         <Route path="register" element={<RegisterPage />} />
         <Route path="admin/*" element={<AdminPage />} />

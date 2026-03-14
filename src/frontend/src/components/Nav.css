@@ -23,6 +23,20 @@
   background: #e8e8e8;
 }
 
+.nav-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font: inherit;
+  color: inherit;
+  padding: 0.35rem 0.5rem;
+  border-radius: 4px;
+}
+
+.nav-button:hover {
+  background: #f0f0f0;
+}
+
 @media (max-width: 640px) {
   .nav-list {
     flex-direction: column;

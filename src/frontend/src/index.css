@@ -18,3 +18,8 @@ a {
 a:hover {
   text-decoration: underline;
 }
+
+.auth-loading {
+  padding: 2rem;
+  text-align: center;
+}
