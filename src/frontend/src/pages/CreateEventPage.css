@@ -1,0 +1,106 @@
+.create-event-page {
+  max-width: 40rem;
+  margin: 0 auto;
+  padding: 1.5rem 1rem;
+}
+
+.create-event-page h1 {
+  margin: 0 0 0.5rem;
+  font-size: 1.5rem;
+}
+
+.create-event-intro {
+  margin: 0 0 1.5rem;
+  color: #555;
+  font-size: 0.95rem;
+}
+
+.create-event-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.create-event-error {
+  padding: 0.75rem 1rem;
+  background: #fef2f2;
+  color: #b91c1c;
+  border-radius: 6px;
+  font-size: 0.9rem;
+}
+
+.create-event-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.create-event-field label {
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.create-event-field .required {
+  color: #b91c1c;
+}
+
+.create-event-field input,
+.create-event-field textarea {
+  padding: 0.5rem 0.6rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-family: inherit;
+}
+
+.create-event-field input:focus,
+.create-event-field textarea:focus {
+  outline: none;
+  border-color: #2563eb;
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2);
+}
+
+.create-event-field input[aria-invalid="true"],
+.create-event-field textarea[aria-invalid="true"] {
+  border-color: #b91c1c;
+}
+
+.create-event-field-error {
+  font-size: 0.85rem;
+  color: #b91c1c;
+}
+
+.create-event-field-error-block {
+  display: block;
+}
+
+.create-event-datetime,
+.create-event-players {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.create-event-actions {
+  margin-top: 0.5rem;
+}
+
+.create-event-submit {
+  padding: 0.6rem 1.25rem;
+  font-weight: 600;
+  font-size: 1rem;
+  background: #2563eb;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.create-event-submit:hover:not(:disabled) {
+  background: #1d4ed8;
+}
+
+.create-event-submit:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
