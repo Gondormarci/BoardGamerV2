@@ -1,0 +1,73 @@
+.home-page {
+  max-width: 42rem;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+}
+
+.home-hero {
+  margin-bottom: 2.5rem;
+}
+
+.home-hero h1 {
+  margin: 0 0 0.5rem;
+  font-size: 2rem;
+}
+
+.home-tagline {
+  margin: 0 0 1.5rem;
+  font-size: 1.125rem;
+  color: #444;
+}
+
+.home-ctas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+
+.home-cta {
+  display: inline-block;
+  padding: 0.6rem 1.25rem;
+  border-radius: 6px;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.home-cta:hover {
+  text-decoration: none;
+}
+
+.home-cta-primary {
+  background: #2563eb;
+  color: #fff;
+}
+
+.home-cta-primary:hover {
+  background: #1d4ed8;
+}
+
+.home-cta-secondary {
+  background: #e5e7eb;
+  color: #111;
+}
+
+.home-cta-secondary:hover {
+  background: #d1d5db;
+}
+
+.home-cta-hint {
+  margin: 0;
+  font-size: 0.9rem;
+  color: #666;
+}
+
+.home-events h2 {
+  margin: 0 0 0.5rem;
+  font-size: 1.25rem;
+}
+
+.home-events-placeholder {
+  margin: 0;
+  color: #666;
+}
