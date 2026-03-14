@@ -162,3 +162,54 @@ export async function leaveEvent(
     return false
   }
 }
+
+/**
+ * Request body for POST /api/v1/events (create event). Aligned with BE-5.1.
+ */
+export interface CreateEventRequest {
+  title: string
+  location: string
+  startsAt: string
+  endsAt: string
+  minPlayers: number
+  maxPlayers: number
+  description: string
+  /** Optional: additional notes, equipment, snacks; may be combined into description by backend */
+  additionalNotes?: string
+  equipment?: string
+  snacks?: string
+  /** Optional: board game names (e.g. "Catan", "Ticket to Ride") */
+  boardGameNames?: string[]
+}
+
+/**
+ * Create a new event. Returns the created event id on 201, or null on failure.
+ */
+export async function createEvent(
+  baseUrl: string,
+  fetchWithAuth: AuthFetch,
+  payload: CreateEventRequest
+): Promise<{ eventId: string } | null> {
+  if (!baseUrl) return null
+  try {
+    const res = await fetchWithAuth(`${baseUrl}/api/v1/events`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    })
+    if (res.status !== 201) return null
+    const data = (await res.json()) as { id?: string }
+    const eventId = data?.id ?? (data as unknown as { eventId?: string })?.eventId
+    if (typeof eventId !== 'string') {
+      const locationHeader = res.headers.get('Location')
+      const idFromLocation = locationHeader?.match(/\/events\/([^/]+)/)?.[1]
+      if (idFromLocation) return { eventId: idFromLocation }
+      console.error('createEvent: 201 response missing id and Location', { data })
+      return null
+    }
+    return { eventId }
+  } catch (err) {
+    console.error('createEvent failed', { payloadTitle: payload.title, err })
+    return null
+  }
+}
