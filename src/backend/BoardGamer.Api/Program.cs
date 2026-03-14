@@ -1,6 +1,7 @@
 using System.Text.Json;
 using Asp.Versioning;
 using BoardGamer.Application.Common;
+using Microsoft.OpenApi;
 using BoardGamer.Infrastructure.Identity;
 using BoardGamer.Infrastructure.Persistence;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -87,12 +88,37 @@ builder.Services.AddApiVersioning(options =>
 builder.Services.AddControllers();
 builder.Services.AddOpenApi();
 
+// Swagger UI only when not Production
+if (!builder.Environment.IsProduction())
+{
+    builder.Services.AddEndpointsApiExplorer();
+    builder.Services.AddSwaggerGen(options =>
+    {
+        options.SwaggerDoc("v1", new OpenApiInfo
+        {
+            Title = "BoardGamer API",
+            Version = "v1",
+            Description = "BoardGamer REST API"
+        });
+        options.DocInclusionPredicate((docName, apiDesc) => apiDesc.GroupName == docName);
+    });
+}
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
+}
+
+if (!app.Environment.IsProduction())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI(options =>
+    {
+        options.SwaggerEndpoint("/swagger/v1/swagger.json", "BoardGamer API v1");
+    });
 }
 
 app.UseHttpsRedirection();
