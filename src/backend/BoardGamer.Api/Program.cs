@@ -1,6 +1,11 @@
 using Asp.Versioning;
+using BoardGamer.Infrastructure.Persistence;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddDbContext<BoardGamerDbContext>(options =>
+    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 // Add API versioning (URL path: /api/v1/...)
 builder.Services.AddApiVersioning(options =>
