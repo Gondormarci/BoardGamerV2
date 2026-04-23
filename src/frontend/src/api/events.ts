@@ -65,6 +65,14 @@ export function buildEventsSearchQuery(params: EventSearchParams): string {
 }
 
 /**
+ * Participant with userId — only populated for the host (to enable per-player reviews).
+ */
+export interface EventParticipant {
+  userId: string
+  username: string
+}
+
+/**
  * Event details returned by GET /api/v1/events/{id}.
  * Aligned with BE-5.2 contract.
  */
@@ -84,6 +92,7 @@ export interface EventDetail {
   maxPlayers?: number
   availableSlots?: number
   participantNames?: string[]
+  participants?: EventParticipant[]
   isCurrentUserParticipant?: boolean
   isCurrentUserHost?: boolean
   hasCurrentUserPendingJoinRequest?: boolean
@@ -343,5 +352,48 @@ export async function rejectJoinRequest(
   } catch (err) {
     console.error('rejectJoinRequest failed', { eventId, requestId, err })
     return false
+  }
+}
+
+export interface CreateReviewRequest {
+  targetUserId: string
+  ratingType: 'Host' | 'Player'
+  rating: number
+  comment?: string
+}
+
+export interface SubmitReviewResult {
+  success: boolean
+  alreadyReviewed?: boolean
+  error?: string
+}
+
+/**
+ * Submit a post-event review. POST /api/v1/events/{id}/reviews.
+ * Returns success, alreadyReviewed (409), or an error message.
+ */
+export async function submitReview(
+  baseUrl: string,
+  fetchWithAuth: AuthFetch,
+  eventId: string,
+  review: CreateReviewRequest
+): Promise<SubmitReviewResult> {
+  if (!baseUrl) return { success: false, error: 'API not configured.' }
+  try {
+    const res = await fetchWithAuth(
+      `${baseUrl}/api/v1/events/${encodeURIComponent(eventId)}/reviews`,
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(review),
+      }
+    )
+    if (res.status === 201) return { success: true }
+    if (res.status === 409) return { success: false, alreadyReviewed: true }
+    const body = await res.text().catch(() => '')
+    return { success: false, error: body || 'Failed to submit review.' }
+  } catch (err) {
+    console.error('submitReview failed', { eventId, err })
+    return { success: false, error: 'Network error. Please try again.' }
   }
 }

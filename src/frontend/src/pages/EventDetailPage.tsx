@@ -5,9 +5,12 @@ import { useApi } from '../api/useApi'
 import { getApiBase } from '../api/config'
 import {
   type EventDetail,
+  type CreateReviewRequest,
+  type SubmitReviewResult,
   getEventDetail,
   postJoinRequest,
   leaveEvent,
+  submitReview,
 } from '../api/events'
 import { useEventChat } from '../hooks/useEventChat'
 import './EventDetailPage.css'
@@ -35,6 +38,10 @@ export default function EventDetailPage() {
   const [localPendingJoin, setLocalPendingJoin] = useState(false)
   const [actionError, setActionError] = useState<string | null>(null)
   const [chatInput, setChatInput] = useState('')
+  const [reviewRatings, setReviewRatings] = useState<Record<string, number>>({})
+  const [reviewComments, setReviewComments] = useState<Record<string, string>>({})
+  const [reviewSubmitting, setReviewSubmitting] = useState<Record<string, boolean>>({})
+  const [reviewResults, setReviewResults] = useState<Record<string, SubmitReviewResult>>({})
 
   const getAccessToken = useCallback(async () => {
     if (keycloak.token) {
@@ -74,6 +81,25 @@ export default function EventDetailPage() {
     loadEvent()
   }, [loadEvent])
 
+  const handleSubmitReview = async (
+    targetUserId: string,
+    ratingType: CreateReviewRequest['ratingType']
+  ) => {
+    if (!id) return
+    const rating = reviewRatings[targetUserId]
+    if (!rating) return
+    setReviewSubmitting(prev => ({ ...prev, [targetUserId]: true }))
+    const base = getApiBase()
+    const result = await submitReview(base, fetchWithAuth, id, {
+      targetUserId,
+      ratingType,
+      rating,
+      comment: reviewComments[targetUserId] || undefined,
+    })
+    setReviewSubmitting(prev => ({ ...prev, [targetUserId]: false }))
+    setReviewResults(prev => ({ ...prev, [targetUserId]: result }))
+  }
+
   const isAuthenticated = keycloak.authenticated === true
   const isParticipant = event?.isCurrentUserParticipant === true
   const isHost = event?.isCurrentUserHost === true
@@ -82,6 +108,8 @@ export default function EventDetailPage() {
   const canRequestJoin =
     isAuthenticated && !isParticipant && !isHost && !hasPendingRequest
   const canLeave = isAuthenticated && isParticipant && !isHost
+  const eventEnded = event?.endsAt != null && new Date(event.endsAt) < new Date()
+  const canReview = isAuthenticated && (isParticipant || isHost) && eventEnded
 
   const handleRequestToJoin = async () => {
     if (!id || !canRequestJoin) return
@@ -264,6 +292,116 @@ export default function EventDetailPage() {
             {connectionState === 'Reconnecting' && (
               <p className="event-detail-chat-status">Reconnecting…</p>
             )}
+          </section>
+        )}
+
+        {canReview && (
+          <section className="event-detail-section event-detail-reviews" aria-label="Leave a review">
+            <h2 className="event-detail-heading">Leave a Review</h2>
+            {isParticipant && !isHost && event.hostUserId && (() => {
+              const targetId = event.hostUserId
+              const result = reviewResults[targetId]
+              const submitting = reviewSubmitting[targetId] ?? false
+              return (
+                <div className="event-detail-review-card">
+                  <p className="event-detail-review-target">Rate the host: {event.hostName}</p>
+                  {result?.success ? (
+                    <p className="event-detail-review-success">Review submitted!</p>
+                  ) : result?.alreadyReviewed ? (
+                    <p className="event-detail-review-success">You&apos;ve already reviewed this person.</p>
+                  ) : (
+                    <>
+                      <div className="event-detail-star-selector" role="group" aria-label="Rating">
+                        {[5, 4, 3, 2, 1].map(star => (
+                          <label key={star}>
+                            <input
+                              type="radio"
+                              name={`rating-${targetId}`}
+                              value={star}
+                              checked={reviewRatings[targetId] === star}
+                              onChange={() => setReviewRatings(prev => ({ ...prev, [targetId]: star }))}
+                              aria-label={`${star} star${star !== 1 ? 's' : ''}`}
+                            />
+                            ★
+                          </label>
+                        ))}
+                      </div>
+                      <textarea
+                        className="event-detail-review-comment"
+                        placeholder="Comment (optional)"
+                        value={reviewComments[targetId] ?? ''}
+                        onChange={e => setReviewComments(prev => ({ ...prev, [targetId]: e.target.value }))}
+                        maxLength={2000}
+                        aria-label="Review comment"
+                      />
+                      <button
+                        type="button"
+                        className="event-detail-btn event-detail-btn-primary"
+                        onClick={() => handleSubmitReview(targetId, 'Host')}
+                        disabled={submitting || !reviewRatings[targetId]}
+                      >
+                        {submitting ? 'Submitting…' : 'Submit Review'}
+                      </button>
+                      {result?.error && (
+                        <p className="event-detail-review-error">{result.error}</p>
+                      )}
+                    </>
+                  )}
+                </div>
+              )
+            })()}
+            {isHost && (event.participants ?? []).map(participant => {
+              const targetId = participant.userId
+              const result = reviewResults[targetId]
+              const submitting = reviewSubmitting[targetId] ?? false
+              return (
+                <div key={targetId} className="event-detail-review-card">
+                  <p className="event-detail-review-target">Rate player: {participant.username}</p>
+                  {result?.success ? (
+                    <p className="event-detail-review-success">Review submitted!</p>
+                  ) : result?.alreadyReviewed ? (
+                    <p className="event-detail-review-success">You&apos;ve already reviewed this player.</p>
+                  ) : (
+                    <>
+                      <div className="event-detail-star-selector" role="group" aria-label="Rating">
+                        {[5, 4, 3, 2, 1].map(star => (
+                          <label key={star}>
+                            <input
+                              type="radio"
+                              name={`rating-${targetId}`}
+                              value={star}
+                              checked={reviewRatings[targetId] === star}
+                              onChange={() => setReviewRatings(prev => ({ ...prev, [targetId]: star }))}
+                              aria-label={`${star} star${star !== 1 ? 's' : ''}`}
+                            />
+                            ★
+                          </label>
+                        ))}
+                      </div>
+                      <textarea
+                        className="event-detail-review-comment"
+                        placeholder="Comment (optional)"
+                        value={reviewComments[targetId] ?? ''}
+                        onChange={e => setReviewComments(prev => ({ ...prev, [targetId]: e.target.value }))}
+                        maxLength={2000}
+                        aria-label="Review comment"
+                      />
+                      <button
+                        type="button"
+                        className="event-detail-btn event-detail-btn-primary"
+                        onClick={() => handleSubmitReview(targetId, 'Player')}
+                        disabled={submitting || !reviewRatings[targetId]}
+                      >
+                        {submitting ? 'Submitting…' : 'Submit Review'}
+                      </button>
+                      {result?.error && (
+                        <p className="event-detail-review-error">{result.error}</p>
+                      )}
+                    </>
+                  )}
+                </div>
+              )
+            })}
           </section>
         )}
 
