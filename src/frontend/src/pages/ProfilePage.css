@@ -1,0 +1,173 @@
+.profile-page {
+  max-width: 40rem;
+  margin: 0 auto;
+  padding: 1.5rem 1rem;
+}
+
+.profile-header {
+  margin: 0 0 1.5rem;
+}
+
+.profile-header h1 {
+  margin: 0;
+  font-size: 1.5rem;
+}
+
+.profile-bio {
+  margin-bottom: 1.5rem;
+}
+
+.profile-bio h2 {
+  margin: 0 0 0.5rem;
+  font-size: 1.05rem;
+  font-weight: 600;
+}
+
+.profile-bio-text {
+  margin: 0;
+  color: #444;
+  white-space: pre-wrap;
+  line-height: 1.5;
+}
+
+.profile-bio-empty {
+  margin: 0;
+  color: #888;
+  font-style: italic;
+}
+
+.profile-bio-textarea {
+  width: 100%;
+  min-height: 6rem;
+  padding: 0.5rem;
+  font-size: 0.95rem;
+  font-family: inherit;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  resize: vertical;
+  box-sizing: border-box;
+}
+
+.profile-bio-textarea:focus {
+  outline: none;
+  border-color: #6366f1;
+  box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.15);
+}
+
+.profile-bio-char-count {
+  margin: 0.25rem 0 0;
+  font-size: 0.8rem;
+  color: #888;
+  text-align: right;
+}
+
+.profile-bio-char-count.over-limit {
+  color: #dc2626;
+}
+
+.profile-bio-actions {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+}
+
+.profile-btn {
+  padding: 0.4rem 0.9rem;
+  font-size: 0.9rem;
+  font-weight: 500;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.profile-btn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.profile-btn-primary {
+  background: #6366f1;
+  color: #fff;
+}
+
+.profile-btn-primary:hover:not(:disabled) {
+  background: #4f46e5;
+}
+
+.profile-btn-secondary {
+  background: #e5e7eb;
+  color: #374151;
+}
+
+.profile-btn-secondary:hover:not(:disabled) {
+  background: #d1d5db;
+}
+
+.profile-stats,
+.profile-ratings {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.profile-stat,
+.profile-rating {
+  flex: 1;
+  min-width: 10rem;
+  padding: 1rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  background: #fff;
+}
+
+.profile-stat-label,
+.profile-rating-label {
+  margin: 0 0 0.25rem;
+  font-size: 0.85rem;
+  color: #666;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.profile-stat-value {
+  margin: 0;
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #111;
+}
+
+.profile-rating-value {
+  margin: 0;
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #111;
+}
+
+.profile-rating-count {
+  margin: 0.1rem 0 0;
+  font-size: 0.8rem;
+  color: #888;
+}
+
+.profile-error {
+  margin: 0 0 1rem;
+  padding: 0.75rem 1rem;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: 6px;
+  color: #dc2626;
+  font-size: 0.9rem;
+}
+
+.profile-loading {
+  padding: 2rem 0;
+  color: #666;
+  text-align: center;
+}
+
+.profile-not-found {
+  padding: 2rem 0;
+  color: #666;
+}
