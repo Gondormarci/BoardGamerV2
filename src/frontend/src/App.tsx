@@ -21,6 +21,7 @@ export default function App() {
         <Route index element={<HomePage />} />
         <Route path="search" element={<SearchPage />} />
         <Route path="events/:id" element={<EventDetailPage />} />
+        <Route path="profile/:userId" element={<ProfilePage />} />
         <Route element={<ProtectedRoute />}>
           <Route path="events/create" element={<CreateEventPage />} />
           <Route path="my-events" element={<MyEventsPage />} />
